@@ -1,0 +1,456 @@
+<title>从五种到一种</title>
+<style>
+  /* 石墨极简 · Zinc 灰阶 + 暖橙点睛（≤3 处）
+     取自 gzh-design-skill / theme-graphite-minimal
+     深色为 Zinc 全阶推导，原主题未定义 */
+  :root{
+    --white:#FFFFFF;
+    --ground:#FFFFFF;
+    --sunk:#FAFAFA;
+    --tagbg:#F4F4F5;
+    --rule:#E4E4E7;
+    --ink:#27272A;
+    --ink-2:#3F3F46;
+    --body:#52525B;
+    --muted:#71717A;
+    --faint:#A1A1AA;
+    --accent:#F97316;
+    --accent-tint:rgba(249,115,22,0.08);
+
+    --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --measure:41rem;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --white:#18181B;
+      --ground:#121214;
+      --sunk:#1B1B1F;
+      --tagbg:#27272A;
+      --rule:#2C2C31;
+      --ink:#FAFAFA;
+      --ink-2:#E4E4E7;
+      --body:#A1A1AA;
+      --muted:#8B8B93;
+      --faint:#6B6B73;
+      --accent:#FB923C;
+      --accent-tint:rgba(251,146,60,0.10);
+    }
+  }
+  :root[data-theme="dark"]{
+    --white:#18181B;--ground:#121214;--sunk:#1B1B1F;--tagbg:#27272A;--rule:#2C2C31;
+    --ink:#FAFAFA;--ink-2:#E4E4E7;--body:#A1A1AA;--muted:#8B8B93;--faint:#6B6B73;
+    --accent:#FB923C;--accent-tint:rgba(251,146,60,0.10);
+  }
+
+  body{
+    background:var(--ground);color:var(--body);
+    font-family:var(--sans);font-size:15px;line-height:1.8;letter-spacing:.3px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{max-width:900px;margin:0 auto;padding:4rem 1.25rem 7rem;}
+  @media(min-width:800px){.page{padding-left:2.5rem;padding-right:2.5rem;}}
+
+  /* ── 刊头 ── */
+  .masthead{padding-bottom:28px;border-bottom:1px solid var(--rule);}
+  .doc-meta{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin:0 0 20px;}
+  h1{font-size:34px;font-weight:800;color:var(--ink);letter-spacing:.5px;line-height:1.35;margin:0 0 14px;text-wrap:balance;}
+  .sub{font-size:15px;color:var(--body);margin:0;max-width:var(--measure);}
+
+  /* ── 摘要（极浅灰底 + 上下细线） ── */
+  .summary{background:var(--sunk);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:26px 24px;margin:32px 0 8px;}
+  .summary .lbl{font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin:0 0 14px;}
+  .summary p{margin:0 0 14px;max-width:none;}
+  .summary p:last-of-type{margin-bottom:0;}
+  .summary dl{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;margin:20px 0 0;padding-top:18px;border-top:1px solid var(--rule);font-size:14px;}
+  .summary dt{font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--faint);padding-top:4px;white-space:nowrap;}
+  .summary dd{margin:0;}
+
+  /* ── 章节头：48px 水印编号 + 英文标签 + 深炭标题 + 细线 ── */
+  section{margin-top:56px;}
+  .sh{position:relative;padding-bottom:20px;border-bottom:1px solid var(--rule);margin-bottom:28px;}
+  .sh .wm{font-size:48px;font-weight:900;color:var(--rule);margin:0;line-height:1;letter-spacing:-2px;}
+  .sh .en{font-size:10px;color:var(--faint);font-weight:500;letter-spacing:3px;margin:-8px 0 6px;text-transform:uppercase;}
+  .sh h2{font-size:20px;font-weight:800;color:var(--ink);margin:0;letter-spacing:.5px;line-height:1.4;}
+
+  /* ── 子标题：3px 石墨竖条 ── */
+  h3{font-size:15px;font-weight:800;color:var(--ink);margin:28px 0 14px;padding-left:12px;border-left:3px solid var(--body);line-height:1.4;}
+  h3:first-child{margin-top:0;}
+
+  p{max-width:var(--measure);margin:0 0 22px;text-align:justify;}
+  p:last-child{margin-bottom:0;}
+
+  /* ── 石墨下划线关键词标记（本风格核心特征） ── */
+  .k{border-bottom:2px solid var(--body);font-weight:600;color:var(--ink);}
+  .o{border-bottom:2px solid var(--accent);font-weight:600;color:var(--ink);}
+
+  /* ── 表格 ── */
+  .tw{overflow-x:auto;margin:0 0 22px;}
+  table{border-collapse:collapse;width:100%;font-size:13px;line-height:1.7;letter-spacing:0;}
+  table.wide{min-width:600px;}
+  th,td{text-align:left;padding:11px 16px 11px 0;border-bottom:1px solid var(--rule);vertical-align:top;}
+  th{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--faint);padding-bottom:9px;white-space:nowrap;}
+  td.f{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12px;}
+  td.name{font-weight:700;color:var(--ink);white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  tr.self td{background:var(--tagbg);}
+  caption{caption-side:bottom;text-align:left;font-size:12px;color:var(--faint);padding-top:12px;line-height:1.7;}
+
+  /* ── 石墨圆标编号列表 ── */
+  ol.findings{list-style:none;counter-reset:f;padding:0;margin:0;}
+  ol.findings li{counter-increment:f;position:relative;padding-left:34px;margin:0 0 14px;max-width:var(--measure);text-align:justify;}
+  ol.findings li:last-child{margin:0;}
+  ol.findings li::before{
+    content:counter(f,decimal-leading-zero);position:absolute;left:0;top:0;
+    font-family:var(--mono);font-size:11px;font-weight:600;line-height:27px;
+    color:var(--faint);font-variant-numeric:tabular-nums;
+  }
+
+  /* ── 标签胶囊 ── */
+  .tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;background:var(--tagbg);color:var(--muted);vertical-align:2px;white-space:nowrap;}
+  .tag-o{background:var(--accent-tint);color:var(--accent);}
+
+  /* ── 实验块：极浅灰底 + 细线 ── */
+  .exp{background:var(--sunk);border:1px solid var(--rule);margin:0 0 14px;}
+  .exp-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;padding:14px 20px;border-bottom:1px solid var(--rule);}
+  .exp-n{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:2px;color:var(--faint);text-transform:uppercase;}
+  .exp-t{font-weight:800;font-size:15px;color:var(--ink);}
+  .exp-d{font-family:var(--mono);font-size:11px;color:var(--faint);margin-left:auto;white-space:nowrap;}
+  .exp dl{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px 16px;margin:0;padding:18px 20px;font-size:14px;line-height:1.75;}
+  .exp dt{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--faint);padding-top:5px;text-transform:uppercase;}
+  .exp dd{margin:0;}
+  .pass{color:var(--ink);font-weight:700;border-bottom:2px solid var(--body);}
+  .fail{color:var(--muted);font-weight:700;}
+
+  /* ── 图 ── */
+  figure{margin:0 0 22px;}
+  figure svg{display:block;width:100%;height:auto;overflow:visible;}
+  .fig-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin:0 0 14px;}
+  figcaption{font-size:12px;color:var(--faint);line-height:1.75;padding-top:12px;max-width:var(--measure);}
+  .s-name{font-family:var(--sans);font-size:16px;font-weight:800;}
+  .s-sub{font-family:var(--sans);font-size:12px;font-weight:400;}
+  .s-meta{font-family:var(--sans);font-size:12px;font-weight:600;}
+  .s-tag{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:1.5px;}
+  .s-num{font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums;}
+
+  /* ── 石墨竖条结论块 ── */
+  .decision{border-left:3px solid var(--body);background:var(--sunk);padding:20px 22px;margin:22px 0 0;}
+  .decision p{margin-bottom:14px;}
+  .decision p:last-child{margin-bottom:0;}
+
+  code{font-family:var(--mono);font-size:.9em;background:var(--tagbg);color:var(--ink-2);padding:1px 5px;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+
+<div class="page">
+
+<header class="masthead">
+  <p class="doc-meta">方向评估 · V3 · 2026-09-13 · 内部</p>
+  <h1>设计规范驱动的存量治理</h1>
+  <p class="sub">用一份规范把已有代码里的多种组件写法收敛成一种，并保留收敛时的取舍依据。</p>
+</header>
+
+<div class="summary">
+  <p class="lbl">摘要</p>
+  <p>已有的 AI 设计系统产品集中在内容分发层，该层<span class="k">供给成本为零</span>、有五家以上免费竞争，不具备定价能力。唯一在收费的产品卖的是调用量和符合度检查，不是内容本身。</p>
+  <p>可切入的位置是<span class="k">存量治理</span>：面向已有数百个页面、正在用 AI 生成新页面、但没有专职规范维护岗位的团队，提供组件写法的收敛改造。单点实测显示，企业弹窗治理从约 2 小时降到约 20 分钟。</p>
+  <p>方向已收敛，<span class="k">商业假设未验证</span>。三个实验可在八到十周内给出是否值得全职投入的判断。</p>
+  <dl>
+    <dt>已验证</dt><dd>市场格局、竞品定价、单次治理提速（样本量 1）</dd>
+    <dt>未验证</dt><dd>方法可复用性、客户付费意愿、市场容量</dd>
+    <dt>下一动作</dt><dd>实验一，跟随下一个治理任务执行，一到两周</dd>
+  </dl>
+</div>
+
+<section>
+  <div class="sh">
+    <p class="wm">01</p>
+    <p class="en">Market</p>
+    <h2>市场格局</h2>
+  </div>
+
+  <p>2026 年 4 月 Google 开源 DESIGN.md 格式后，五个月内形成了<span class="k">完整的免费供给链</span>。</p>
+
+  <div class="tw">
+    <table class="wide">
+      <thead><tr><th>产品</th><th>位置</th><th>规模</th><th>收费</th></tr></thead>
+      <tbody>
+        <tr><td class="name">google-labs-code/design.md</td><td>格式标准，YAML token 加散文说明，只覆盖视觉身份</td><td class="f">27,870 ★</td><td class="f">Apache-2.0</td></tr>
+        <tr><td class="name">designmd.ai</td><td>目录站，带 MCP 与 CLI</td><td class="f">100+ 套</td><td class="f">免费</td></tr>
+        <tr><td class="name">designmd.app</td><td>目录站</td><td class="f">759 套</td><td class="f">免费</td></tr>
+        <tr><td class="name">designmd.co</td><td>目录站加 MCP，含符合度检查</td><td class="f">2,625 套</td><td class="f">$19 / $49 / $199</td></tr>
+        <tr><td class="name">design.dev、masumi</td><td>从任意 URL 生成规范</td><td class="f">—</td><td class="f">免费</td></tr>
+        <tr><td class="name">VoltAgent/awesome-design-md</td><td>开源提取结果</td><td class="f">31 站</td><td class="f">MIT</td></tr>
+        <tr><td class="name">OJO（touchine）</td><td>生成设计系统的 skill，含质量审计</td><td class="f">113 ★</td><td class="f">免费</td></tr>
+      </tbody>
+      <caption>数据采集于 2026-09-12，来源为各项目 GitHub API 与官网定价页。$199 为买断价。</caption>
+    </table>
+  </div>
+
+  <figure>
+    <p class="fig-lbl">供给分层</p>
+    <svg viewBox="0 0 1000 372" role="img" aria-label="四个层级从下到上：格式层由 Google 标准化，内容层五家免费分发，检查层一家收费，治理层空缺">
+      <line x1="58" y1="300" x2="58" y2="56" stroke="var(--faint)" stroke-width="1"></line>
+      <path d="M58 48 L53 60 L63 60 Z" fill="var(--faint)"></path>
+      <text class="s-sub" transform="rotate(-90 30 186)" x="30" y="186" text-anchor="middle" fill="var(--faint)">通用　→　私有</text>
+
+      <rect x="120" y="40" width="820" height="68" fill="var(--accent-tint)" stroke="var(--accent)" stroke-width="1.5"></rect>
+      <text class="s-tag" x="144" y="79" fill="var(--accent)">L4</text>
+      <text class="s-name" x="200" y="80" fill="var(--accent)">治理层</text>
+      <text class="s-sub" x="320" y="80" fill="var(--body)">用规范改造存量代码，保留取舍依据</text>
+      <text class="s-meta" x="916" y="80" text-anchor="end" fill="var(--accent)">空缺</text>
+
+      <rect x="120" y="108" width="820" height="68" fill="var(--white)" stroke="var(--rule)" stroke-width="1"></rect>
+      <text class="s-tag" x="144" y="147" fill="var(--faint)">L3</text>
+      <text class="s-name" x="200" y="148" fill="var(--ink)">检查层</text>
+      <text class="s-sub" x="320" y="148" fill="var(--body)">符合度检查，检视觉偏差，面向 freelancer</text>
+      <text class="s-num" x="916" y="148" text-anchor="end" fill="var(--body)">$19 / $49</text>
+
+      <rect x="120" y="176" width="820" height="68" fill="var(--sunk)" stroke="var(--rule)" stroke-width="1"></rect>
+      <text class="s-tag" x="144" y="215" fill="var(--faint)">L2</text>
+      <text class="s-name" x="200" y="216" fill="var(--ink)">内容层</text>
+      <text class="s-sub" x="320" y="216" fill="var(--body)">模板目录，五家以上在免费分发</text>
+      <text class="s-num" x="916" y="216" text-anchor="end" fill="var(--body)">2,625 套</text>
+
+      <rect x="120" y="244" width="820" height="68" fill="var(--white)" stroke="var(--rule)" stroke-width="1"></rect>
+      <text class="s-tag" x="144" y="283" fill="var(--faint)">L1</text>
+      <text class="s-name" x="200" y="284" fill="var(--ink)">格式层</text>
+      <text class="s-sub" x="320" y="284" fill="var(--body)">DESIGN.md，Google 开源，已成事实标准</text>
+      <text class="s-num" x="916" y="284" text-anchor="end" fill="var(--body)">27,870 ★</text>
+
+      <rect x="120" y="40" width="820" height="272" fill="none" stroke="var(--body)" stroke-width="1"></rect>
+      <text class="s-sub" x="120" y="344" fill="var(--faint)">L1 到 L3 均已被占据，且 L1、L2 为免费供给</text>
+    </svg>
+    <figcaption>越向上越贴近具体业务，也越难被通用产品覆盖。L4 是唯一未被占据的层，同时是唯一必须依赖客户私有信息的层。</figcaption>
+  </figure>
+
+  <h3>三条结论</h3>
+  <ol class="findings">
+    <li>格式层已被标准化且开源，自定格式没有意义，应当<span class="k">直接兼容 DESIGN.md</span>。</li>
+    <li>内容层供给成本为零，五家以上在免费分发，不存在定价空间。做模板聚合站等同于进入一个<span class="k">已经饱和的免费市场</span>。</li>
+    <li>designmd.co 的定价结构说明<span class="k">检查能力可以收费</span>：目录免费，符合度检查（<code>certify_conformance</code>）放在付费档。它面向 freelancer，检查的是视觉偏差，不涉及业务规则。</li>
+  </ol>
+</section>
+
+<section>
+  <div class="sh">
+    <p class="wm">02</p>
+    <p class="en">Entry Point</p>
+    <h2>切入点选择</h2>
+  </div>
+
+  <p>同一份规范可以用于两个场景，两者的<span class="k">采纳阻力差异很大</span>。</p>
+
+  <div class="tw">
+    <table class="wide">
+      <thead><tr><th></th><th>生成新页面</th><th>存量治理</th></tr></thead>
+      <tbody>
+        <tr><td class="name">规范的角色</td><td>可选，用于预防不一致</td><td>前置条件，缺了任务无法开始</td></tr>
+        <tr><td class="name">收益出现时间</td><td>延迟，落在后续维护</td><td>当次，改完即可计数</td></tr>
+        <tr><td class="name">收益可归因</td><td>否</td><td>是，改动数量明确</td></tr>
+        <tr><td class="name">需要改变工作习惯</td><td>需要</td><td>不需要，是一次性项目</td></tr>
+        <tr><td class="name">触发时刻</td><td>无明确触发</td><td>升版本、品牌改色、业务线合并、并购后统一</td></tr>
+        <tr><td class="name">预算路径</td><td>无</td><td>项目预算，总监层级可批</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>选择存量治理。它把规范从一件需要自律维护的资产，变成<span class="k">完成某个具体任务的必需输入</span>。</p>
+
+  <h3>单点实测</h3>
+  <p>企业弹窗治理，同一任务两种做法对比：直接用 AI 逐个改约 2 小时；有规范后扫描代码库、全局替换、按规范校验约 20 分钟。<span class="tag">样本量 1</span> 该数据为随手记录，未控制变量，实验一需要重新严格测量。</p>
+</section>
+
+<section>
+  <div class="sh">
+    <p class="wm">03</p>
+    <p class="en">Customer</p>
+    <h2>客户定义</h2>
+  </div>
+
+  <div class="tw">
+    <table class="wide">
+      <thead><tr><th>类型</th><th>特征</th><th>判断</th></tr></thead>
+      <tbody>
+        <tr><td class="name">大型企业</td><td>有专职设计系统团队</td><td>自建。京东内部五个月投入、一万余文件、零工具采购</td></tr>
+        <tr class="self"><td class="name">中型团队</td><td>数百个页面，无专职规范岗位，正在用 AI 生成</td><td>目标客户</td></tr>
+        <tr><td class="name">小团队与个人</td><td>无存量，无历史判断</td><td>不服务。需求是生成好看的界面，该市场已免费</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>市场容量</h3>
+  <p><span class="tag">未知</span> 目前没有可靠依据估算符合上述特征的团队数量，也不打算用行业报告倒推一个数字。这个量级由实验三的触达难度间接给出：如果通过现有人脉在四周内找不到第二个愿意试的团队，说明<span class="k">密度过低，商业模型不成立</span>。</p>
+</section>
+
+<section>
+  <div class="sh">
+    <p class="wm">04</p>
+    <p class="en">Delivery</p>
+    <h2>交付结构</h2>
+  </div>
+
+  <div class="tw">
+    <table class="wide">
+      <thead><tr><th>阶段</th><th>输入</th><th>输出</th><th>自动化</th><th>执行</th></tr></thead>
+      <tbody>
+        <tr><td class="name">诊断</td><td>公开 URL 或代码库</td><td>现状清单：同类组件有几种写法、各占多少、哪些已废弃但仍在复制</td><td class="f">全自动</td><td class="f">工具</td></tr>
+        <tr class="self"><td class="name">定规范</td><td>现状清单</td><td>每类组件的目标写法，及选择依据</td><td class="f">人工</td><td class="f">设计师</td></tr>
+        <tr><td class="name">治理</td><td>规范加代码库</td><td>改动 PR，含逐处对照与验证报告</td><td class="f">半自动</td><td class="f">工具加人工复核</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure>
+    <p class="fig-lbl">交付流</p>
+    <svg viewBox="0 0 1000 290" role="img" aria-label="诊断、定规范、治理三个阶段依次相连，定规范为人工环节，同时向治理和方法包两个方向输出">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--body)"></path>
+        </marker>
+        <marker id="ar-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"></path>
+        </marker>
+      </defs>
+
+      <rect x="40" y="56" width="220" height="84" fill="var(--white)" stroke="var(--rule)" stroke-width="1"></rect>
+      <text class="s-name" x="150" y="92" text-anchor="middle" fill="var(--ink)">诊断</text>
+      <text class="s-sub" x="150" y="114" text-anchor="middle" fill="var(--faint)">全自动 · 工具</text>
+
+      <rect x="390" y="56" width="220" height="84" fill="var(--accent-tint)" stroke="var(--accent)" stroke-width="1.5"></rect>
+      <text class="s-name" x="500" y="92" text-anchor="middle" fill="var(--accent)">定规范</text>
+      <text class="s-sub" x="500" y="114" text-anchor="middle" fill="var(--accent)">人工 · 设计师</text>
+
+      <rect x="740" y="56" width="220" height="84" fill="var(--white)" stroke="var(--rule)" stroke-width="1"></rect>
+      <text class="s-name" x="850" y="92" text-anchor="middle" fill="var(--ink)">治理</text>
+      <text class="s-sub" x="850" y="114" text-anchor="middle" fill="var(--faint)">半自动 · 工具加复核</text>
+
+      <line x1="260" y1="98" x2="382" y2="98" stroke="var(--body)" stroke-width="1" marker-end="url(#ar)"></line>
+      <text class="s-meta" x="321" y="86" text-anchor="middle" fill="var(--body)">现状清单</text>
+
+      <line x1="610" y1="98" x2="732" y2="98" stroke="var(--body)" stroke-width="1" marker-end="url(#ar)"></line>
+      <text class="s-meta" x="671" y="86" text-anchor="middle" fill="var(--body)">目标写法</text>
+
+      <path d="M500 140 L500 204" fill="none" stroke="var(--accent)" stroke-width="1" marker-end="url(#ar-o)"></path>
+      <text class="s-meta" x="516" y="178" fill="var(--accent)">选择依据</text>
+
+      <rect x="390" y="212" width="220" height="60" fill="var(--sunk)" stroke="var(--body)" stroke-width="1" stroke-dasharray="3 3"></rect>
+      <text class="s-name" x="500" y="240" text-anchor="middle" fill="var(--ink)">方法包</text>
+      <text class="s-sub" x="500" y="260" text-anchor="middle" fill="var(--faint)">跨客户复用</text>
+
+      <text class="s-sub" x="40" y="262" fill="var(--faint)">两端可自动化</text>
+      <text class="s-sub" x="960" y="262" text-anchor="end" fill="var(--faint)">中间不可自动化</text>
+    </svg>
+    <figcaption>唯一不可自动化的环节在中间，它同时向右输出目标写法、向下输出选择依据。前者供本次治理使用，后者积累成可跨客户复用的方法包。</figcaption>
+  </figure>
+
+  <h3>第二阶段的两个产出</h3>
+  <p>从多种现存写法中选定一种，这一步<span class="k">无法自动化</span>——出现次数最多的写法未必正确，可能只是最早写的被复制得最多。它产出规范，使后续检查有基准；同时产出选择依据，这部分内容不在任何公开资料里，构成后续的差异来源。</p>
+  <p>这一步发生在必须做决定的时刻，因此依据的记录<span class="k">不依赖任何人的自觉</span>。</p>
+</section>
+
+<section>
+  <div class="sh">
+    <p class="wm">05</p>
+    <p class="en">Business Model</p>
+    <h2>商业模型</h2>
+  </div>
+
+  <h3>单价推算</h3>
+  <p><span class="tag">假设</span> 一次组件治理为客户节省 8 至 15 人天，按中型团队一类组件覆盖数十个页面估。按一线城市前端与设计日成本 1,500 至 2,500 元计，节省金额 1.2 万至 3.75 万元。工具类交付通常定价在节省额的 20% 至 40%，对应<span class="k">单次 3,000 至 15,000 元</span>。</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>交付序次</th><th>预计人工投入</th><th>单价</th><th>毛利率</th></tr></thead>
+      <tbody>
+        <tr><td class="f">第 1 单</td><td class="f">3 天</td><td class="f">8,000</td><td class="f">约 0%</td></tr>
+        <tr><td class="f">第 10 单</td><td class="f">0.5 天</td><td class="f">8,000</td><td class="f">约 80%</td></tr>
+        <tr><td class="f">第 30 单</td><td class="f">0.1 天</td><td class="f">8,000</td><td class="f">约 95%</td></tr>
+      </tbody>
+      <caption>全部为假设值。该模型成立的唯一前提是治理方法可跨客户复用，这正是实验二要验证的内容。若不成立，交付成本不下降，本质是按人天计费的咨询。</caption>
+    </table>
+  </div>
+
+  <h3>收费方式</h3>
+  <p>按治理任务计费，不做月度订阅。理由是治理有明确起止、<span class="k">价值当次兑现</span>、走项目预算审批链短。订阅制留到方法成熟、客户能自助执行之后再考虑。</p>
+
+  <h3>可复用的治理类型</h3>
+  <p>弹窗、Toast、空状态、按钮、表单校验等等，每一类是一个独立的方法包。<span class="k">类型数量决定单客户的复购次数</span>。</p>
+</section>
+
+<section>
+  <div class="sh">
+    <p class="wm">06</p>
+    <p class="en">Validation</p>
+    <h2>验证计划</h2>
+  </div>
+
+  <p>三个实验，八到十周。<span class="k">前两个不需要外部资源</span>。</p>
+
+  <div class="exp">
+    <div class="exp-h"><span class="exp-n">实验一</span><span class="exp-t">严格测量单次治理</span><span class="exp-d">1–2 周</span></div>
+    <dl>
+      <dt>目的</dt><dd>取得可对外引用的单次数据，替换现有的随手记录</dd>
+      <dt>方法</dt><dd>跟随下一个治理任务（Toast、空状态或按钮均可），记录：规范准备耗时、扫出处数与写法种类、自动替换与人工介入比例、验证耗时、错改与漏改数、总人天与手工估算对比</dd>
+      <dt>附带</dt><dd>逐轮标注历史对话，统计其中因 AI 不了解规范导致的轮次占比。另三类原因（需求未定、模型能力不足、设计师自身迭代）规范无法解决</dd>
+      <dt>阈值</dt><dd><span class="pass">通过</span> 规范可解决的轮次占比 ≥ 30%　<span class="fail">失败</span> 低于 30%，说明节省幅度不足以支撑付费</dd>
+    </dl>
+  </div>
+
+  <div class="exp">
+    <div class="exp-h"><span class="exp-n">实验二</span><span class="exp-t">方法可复用性</span><span class="tag tag-o">最关键</span><span class="exp-d">2–4 周</span></div>
+    <dl>
+      <dt>目的</dt><dd>确认商业模型中的成本下降曲线是否存在</dd>
+      <dt>方法</dt><dd>把实验一的过程沉淀为方法包，用它执行第二类组件治理，记录同样的指标</dd>
+      <dt>阈值</dt><dd><span class="pass">通过</span> 第二次总耗时 ≤ 第一次的 50%　<span class="fail">失败</span> 耗时相当，说明每类治理都需定制，天花板是咨询</dd>
+      <dt>备注</dt><dd>本实验决定这是产品还是服务，优先级高于其余两项</dd>
+    </dl>
+  </div>
+
+  <div class="exp">
+    <div class="exp-h"><span class="exp-n">实验三</span><span class="exp-t">跨团队与付费意愿</span><span class="exp-d">4–6 周</span></div>
+    <dl>
+      <dt>目的</dt><dd>验证方法脱离熟悉的代码库仍然成立，以及是否有人付钱</dd>
+      <dt>方法</dt><dd>寻找一个外部团队执行一次完整治理。跨业务线可作为过渡验证，外部团队为准</dd>
+      <dt>阈值</dt><dd><span class="pass">通过</span> 对方主动询问实施方式并愿意付费　<span class="fail">失败</span> 四周内无法找到愿意试的团队，说明客户密度过低</dd>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <div class="sh">
+    <p class="wm">07</p>
+    <p class="en">Risk</p>
+    <h2>风险</h2>
+  </div>
+
+  <div class="tw">
+    <table class="wide">
+      <thead><tr><th>风险</th><th>说明</th><th>应对</th></tr></thead>
+      <tbody>
+        <tr><td class="name">知识产权归属</td><td>方法在职期间、使用公司资源、围绕公司业务形成</td><td>在实验三之前确认归属边界，必要时重写一套不依赖内部资产的实现</td></tr>
+        <tr><td class="name">缺少工程合伙人</td><td>全局替换出错代价高，实验三起需要可靠的工具实现</td><td>实验二期间开始物色，用实验一二的数据作为说服材料</td></tr>
+        <tr><td class="name">接口层无壁垒</td><td>MCP 为开放协议，各 harness 正在内置项目规则能力</td><td>不在接口上投入，价值集中在方法包与真实代码库的模式积累</td></tr>
+        <tr><td class="name">竞品向上延伸</td><td>designmd.co 已具备目录、MCP、检查三项能力，向私有托管延伸的路径通畅且有流量优势</td><td>避开 freelancer 市场，集中在业务语义检查与规则作用域，这两项通用产品难以覆盖</td></tr>
+        <tr><td class="name">企业数据顾虑</td><td>代码库接入需走安全审批，周期长</td><td>诊断阶段只用公开 URL，深入合作再接代码库；提供私有部署</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="sh">
+    <p class="wm">08</p>
+    <p class="en">Decision</p>
+    <h2>决策点</h2>
+  </div>
+
+  <div class="decision">
+    <p>三个实验全部在现有工作范围内完成，<span class="k">不需要离职</span>，也不需要注册公司。实验一二的产出对本职工作同样有用。</p>
+    <p>决策发生在实验三之后。同时满足三个条件才考虑全职：规范可解决的返工占比达标、第二次治理耗时减半以上、外部团队主动询问并愿意付费。</p>
+    <p>任一条件不达标，对应的处理是：第一条不达标则整个方向重估；第二条不达标则按咨询模式做，接受较低的天花板；第三条不达标则继续在内部积累，等待客户密度变化。</p>
+  </div>
+</section>
+
+</div>
